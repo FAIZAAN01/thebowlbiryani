@@ -102,7 +102,7 @@ input,textarea,select{transition:border-color .2s,box-shadow .2s}
 <h1 class="sr">The Bowl Biryani</h1>
 <div class="eyebrow">Pre-order · Fresh batches</div>
 <div class="lead">Slow dum-cooked chicken biryani, made fresh for you</div>
-<div id="st" class="pill"><span class="dot"></span><span id="st1">Kitchen closed</span></div>
+<div id="st" class="pill"><span class="dot"></span><span id="st1">Kitchen opens at 7pm</span></div>
 <div class="sub" id="st2"></div>
 <a class="cta" href="#order">Order now</a>
 </header>
@@ -162,8 +162,8 @@ const S=JSON.parse($("state").textContent);
 const pm=()=>document.querySelector('input[name="pm"]:checked').value;
 function render(){
  const o=!!S.open,pre=pm()=="pre",t=q[0]*P[0]+q[1]*P[1];
- $("st").className="pill"+(o?" open":"");
- $("st1").textContent=o?"Kitchen open — taking orders":"Kitchen closed";
+ $("st").className="pill"+(o?" opens":"");
+ $("st1").textContent=o?"Kitchen open — taking orders":"Kitchen opens at 7pm";
  $("st2").textContent=S.note||(o?"Place your pre-order below.":"Watch our Instagram Stories for the next ordering window.");
  $("q0").textContent=q[0];$("q1").textContent=q[1];$("bs").textContent=[q[0]&&q[0]+" × 500 g",q[1]&&q[1]+" × 1 kg"].filter(Boolean).join(" + ")||"No items";
  if($("tt").textContent!=="₹"+t){$("tt").classList.remove("bump");void $("tt").offsetWidth;$("tt").classList.add("bump")}$("tt").textContent="₹"+t;$("ua").textContent="₹"+t;
