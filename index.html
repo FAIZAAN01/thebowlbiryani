@@ -164,10 +164,8 @@ input,textarea,select{transition:border-color .2s,box-shadow .2s}
 <label class="pay" id="p1"><input type="radio" name="pm" value="pre"><span><b>Pre-pay now (UPI)</b><small>Pay in advance &amp; we confirm your batch</small></span></label>
 <div id="up">
 <div>Amount: <b id="ua">₹0</b> &nbsp;·&nbsp; UPI ID: <b id="ui"></b></div>
-<a class="go2" id="ul" href="#">Pay with UPI app</a>
-<div class="apps"><a id="a1" href="#">Google Pay</a><a id="a2" href="#">PhonePe</a><a id="a3" href="#">Paytm</a></div>
-<p class="note" style="margin:8px 0 0;text-align:center">Tap to open your UPI app with the amount filled in — no scanning needed.</p>
-<details id="qd"><summary>Paying from another device? Show QR</summary><div class="qrw"><div id="qr"></div><div class="note">Scan with any UPI app. The amount is pre-filled.</div></div></details>
+<div class="qrw"><div id="qr"></div><div class="note" style="margin-top:8px">Scan with any UPI app (Google Pay, PhonePe, Paytm…). The amount is pre-filled.</div>
+<div class="note" style="margin-top:6px">Paying from this phone? Screenshot the QR and choose “Scan from gallery” in your UPI app.</div></div>
 <label class="chk"><input type="checkbox" id="pd"> I've paid — I'll send the screenshot on WhatsApp</label>
 </div>
 <p class="note" id="gm" style="margin-bottom:0">Your order is sent as a WhatsApp message and we confirm it with you.</p>
@@ -216,8 +214,6 @@ function render(){
  $("ui").textContent=UPI;
  const ts=[q[1]&&q[1]+"x1kg",q[0]&&q[0]+"x500g",q[2]&&q[2]+"x250g"].filter(Boolean).join("+");
  const link="upi://pay?pa="+UPI+"&pn="+encodeURIComponent("The Bowl Biryani")+"&am="+t.toFixed(2)+"&cu=INR&tn="+encodeURIComponent("Biryani "+ts);
- const qs=link.slice(10);$("a1").href="tez://upi/pay?"+qs;$("a2").href="phonepe://pay?"+qs;$("a3").href="paytmmp://pay?"+qs;
- $("ul").href=link;$("ul").textContent="Pay ₹"+t+" with UPI app";
  if(pre&&t&&link!==lastQ){lastQ=link;drawQR(link)}
  $("go").disabled=!o||!t;$("go").textContent=o?"Place order on WhatsApp":(st.at?"Will open at "+fmtOpen(st.at):"Ordering is closed");
 }
@@ -246,7 +242,6 @@ $("go").onclick=()=>{
   $("gm").textContent="WhatsApp number isn't set up yet — your order text is below (copied). Please send it to us on WhatsApp or Instagram.";o.scrollIntoView({block:"center"});return}
  window.open("https://wa.me/"+WA+"?text="+encodeURIComponent(m),"_blank");
 };
-if(!matchMedia("(hover:none)").matches)$("qd").open=true;
 let later=false;
 $("lt").onclick=()=>{later=!later;$("sch").style.display=later?"block":"none";$("lt").textContent=later?"✕ Cancel — order for the next batch":"📅 I want to book for later";if(!later){$("dt").value="";$("tm").value=""}};
 render();setInterval(render,30000);
