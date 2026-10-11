@@ -2,6 +2,12 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The Bowl Biryani — Pre-order Chicken Biryani</title>
+<meta name="description" content="The Bowl Biryani — slow dum-cooked Chicken Biryani with long-grain Basmati rice. Pre-order fresh batches, pay on delivery or by UPI.">
+<meta property="og:type" content="website"><meta property="og:site_name" content="The Bowl Biryani">
+<meta property="og:title" content="The Bowl Biryani — Pre-order fresh Chicken Biryani">
+<meta property="og:description" content="Authentic. Flavorful. Delightful. Slow dum-cooked Chicken Biryani, ₹360 per kg.">
+<meta name="twitter:card" content="summary"><meta name="theme-color" content="#17201f">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FoodEstablishment","name":"The Bowl Biryani","slogan":"Authentic. Flavorful. Delightful.","description":"Pre-order Chicken Biryani, slow dum-cooked with Basmati rice and authentic spices.","servesCuisine":"Biryani","priceRange":"₹180–₹360"}</script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Poppins:wght@400;500;600&display=swap">
 <style>
 :root{--bg:#fbf4e6;--card:#fff;--ink:#2a1a10;--mut:#7b6657;--gold:#c8962e;--red:#b83a1e;--line:#eadbbf;--ok:#1f8a4c;--bad:#c0392b;
@@ -63,6 +69,10 @@ footer{text-align:center;color:var(--mut);margin:34px 0 8px;font-size:.85rem}
 .top img:hover{transform:rotate(8deg) scale(1.1)}
 .top a{font:600 .95rem var(--b);color:#e3bf72;text-decoration:none;letter-spacing:.02em}
 .top a:hover{color:#fff}
+.qrw{text-align:center;margin-top:14px}#qr{display:inline-block;background:#fff;padding:10px;border-radius:14px;box-shadow:0 4px 14px rgba(0,0,0,.15);min-height:40px}#qr img{display:block}
+.apps{display:flex;gap:8px;margin-top:8px}.apps a{flex:1;text-align:center;padding:9px 4px;border:1px solid var(--gold);border-radius:12px;color:var(--ink);text-decoration:none;font-size:.8rem;font-weight:600;transition:background .2s,transform .2s}
+.apps a:hover{background:rgba(200,150,46,.18);transform:translateY(-2px)}
+#qd{margin-top:12px}#qd summary{cursor:pointer;font-size:.82rem;color:var(--gold);font-weight:600;text-align:center}
 /* motion */
 @keyframes dropIn{from{opacity:0;transform:translateY(-44px) scale(.82)}}
 @keyframes up{from{opacity:0;transform:translateY(26px)}}
@@ -102,7 +112,7 @@ input,textarea,select{transition:border-color .2s,box-shadow .2s}
 <h1 class="sr">The Bowl Biryani</h1>
 <div class="eyebrow">Pre-order · Fresh batches</div>
 <div class="lead">Slow dum-cooked chicken biryani, made fresh for you</div>
-<div id="st" class="pill"><span class="dot"></span><span id="st1">Kitchen opens at 7pm</span></div>
+<div id="st" class="pill"><span class="dot"></span><span id="st1">Kitchen closed</span></div>
 <div class="sub" id="st2"></div>
 <a class="cta" href="#order">Order now</a>
 </header>
@@ -118,7 +128,7 @@ input,textarea,select{transition:border-color .2s,box-shadow .2s}
 
 <h2 id="order"><small>Menu</small>Signature Chicken Biryani</h2>
 <div class="menu">
-<div><h3>Chicken Biryani · 1 kg</h3><div class="price">₹360</div><span class="chip">🍗 10 chicken pieces</span></div>
+<div><h3>Chicken Biryani · 1 kg</h3><div class="price">₹360</div><span class="chip">🍗 6 chicken pieces</span></div>
 <div class="qty"><button data-i="1" data-d="-1" aria-label="less">−</button><output id="q1">1</output><button data-i="1" data-d="1" aria-label="more">+</button></div>
 </div>
 <div class="menu" style="margin-top:12px">
@@ -144,6 +154,9 @@ input,textarea,select{transition:border-color .2s,box-shadow .2s}
 <div id="up">
 <div>Amount: <b id="ua">₹0</b> &nbsp;·&nbsp; UPI ID: <b id="ui"></b></div>
 <a class="go2" id="ul" href="#">Pay with UPI app</a>
+<div class="apps"><a id="a1" href="#">Google Pay</a><a id="a2" href="#">PhonePe</a><a id="a3" href="#">Paytm</a></div>
+<p class="note" style="margin:8px 0 0;text-align:center">Tap to open your UPI app with the amount filled in — no scanning needed.</p>
+<details id="qd"><summary>Paying from another device? Show QR</summary><div class="qrw"><div id="qr"></div><div class="note">Scan with any UPI app. The amount is pre-filled.</div></div></details>
 <label class="chk"><input type="checkbox" id="pd"> I've paid — I'll send the screenshot on WhatsApp</label>
 </div>
 <p class="note" id="gm" style="margin-bottom:0">Your order is sent as a WhatsApp message and we confirm it with you.</p>
@@ -152,18 +165,22 @@ input,textarea,select{transition:border-color .2s,box-shadow .2s}
 <footer>Follow our Instagram Stories for the next batch 📸<br>The Bowl Biryani — Authentic. Flavorful. Delightful.</footer>
 </main>
 <div class="bar"><div class="in"><div><small id="bs">1 kg</small><b id="tt">₹360</b></div><button class="btn" id="go" disabled>Place order on WhatsApp</button></div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script type="application/json" id="state">{"open":false,"note":""}</script>
 <script>
-const WA="91957193982"; // business WhatsApp number, e.g. 919876543210
-const UPI="9571923982-2@bank"; // business UPI ID
+const WA="91XXXXXXXXXX"; // business WhatsApp number, e.g. 919876543210
+const UPI="9571923982-2@ybl";
+let lastQ="",qr=null;
+function drawQR(l){const b=$("qr");if(typeof QRCode==="undefined"){b.parentNode.style.display="none";return}
+ try{if(!qr)qr=new QRCode(b,{text:l,width:176,height:176,colorDark:"#000000",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M});else qr.makeCode(l)}catch(e){b.parentNode.style.display="none"}}
 const P=[180,360],N=["500 g","1 kg"],q=[0,1];
 const $=i=>document.getElementById(i);
 const S=JSON.parse($("state").textContent);
 const pm=()=>document.querySelector('input[name="pm"]:checked').value;
 function render(){
  const o=!!S.open,pre=pm()=="pre",t=q[0]*P[0]+q[1]*P[1];
- $("st").className="pill"+(o?" opens":"");
- $("st1").textContent=o?"Kitchen open — taking orders":"Kitchen opens at 7pm";
+ $("st").className="pill"+(o?" open":"");
+ $("st1").textContent=o?"Kitchen open — taking orders":"Kitchen closed";
  $("st2").textContent=S.note||(o?"Place your pre-order below.":"Watch our Instagram Stories for the next ordering window.");
  $("q0").textContent=q[0];$("q1").textContent=q[1];$("bs").textContent=[q[0]&&q[0]+" × 500 g",q[1]&&q[1]+" × 1 kg"].filter(Boolean).join(" + ")||"No items";
  if($("tt").textContent!=="₹"+t){$("tt").classList.remove("bump");void $("tt").offsetWidth;$("tt").classList.add("bump")}$("tt").textContent="₹"+t;$("ua").textContent="₹"+t;
@@ -171,7 +188,10 @@ function render(){
  $("up").style.display=pre?"block":"none";
  $("dn").style.display=$("md").value=="Delivery"?"block":"none";
  $("ui").textContent=UPI;
- $("ul").href="upi://pay?pa="+encodeURIComponent(UPI)+"&pn="+encodeURIComponent("The Bowl Biryani")+"&am="+t+"&cu=INR";
+ const link="upi://pay?pa="+UPI+"&pn="+encodeURIComponent("The Bowl Biryani")+"&am="+t.toFixed(2)+"&cu=INR&tn="+encodeURIComponent("Biryani order");
+ const qs=link.slice(10);$("a1").href="tez://upi/pay?"+qs;$("a2").href="phonepe://pay?"+qs;$("a3").href="paytmmp://pay?"+qs;
+ $("ul").href=link;$("ul").textContent="Pay ₹"+t+" with UPI app";
+ if(pre&&t&&link!==lastQ){lastQ=link;drawQR(link)}
  $("go").disabled=!o||!t;$("go").textContent=o?"Place order on WhatsApp":"Ordering is closed";
 }
 document.querySelectorAll("[data-i]").forEach(b=>b.onclick=()=>{const i=+b.dataset.i;q[i]=Math.max(0,Math.min(20,q[i]+ +b.dataset.d));render()});
@@ -191,6 +211,7 @@ $("go").onclick=()=>{
   $("gm").textContent="WhatsApp number isn't set up yet — your order text is below (copied). Please send it to us on WhatsApp or Instagram.";o.scrollIntoView({block:"center"});return}
  window.open("https://wa.me/"+WA+"?text="+encodeURIComponent(m),"_blank");
 };
+if(!matchMedia("(hover:none)").matches)$("qd").open=true;
 render();
 const logo=document.querySelector(".logo"),slot=document.querySelector(".slot"),bar=$("topbar"),btxt=bar.querySelector("a");
 let tick=false;
@@ -214,6 +235,7 @@ const rq=()=>{if(!tick){tick=true;requestAnimationFrame(fly)}};
 addEventListener("scroll",rq,{passive:true});addEventListener("resize",rq);addEventListener("load",rq);
 logo.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
 fly();
+{const ic=document.createElement("link");ic.rel="icon";ic.href=logo.src;document.head.appendChild(ic)}
 const io="IntersectionObserver" in window?new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add("in");setTimeout(()=>x.target.style.transitionDelay="",1000);io.unobserve(x.target)}}),{threshold:.12}):null;
 document.querySelectorAll(".f,.menu,.card,main h2,footer").forEach(el=>{
  el.classList.add("rv");
