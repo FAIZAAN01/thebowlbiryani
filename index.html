@@ -7,7 +7,7 @@
 <meta property="og:title" content="The Bowl Biryani — Pre-order fresh Chicken Tikka Biryani">
 <meta property="og:description" content="Authentic. Flavorful. Delightful. Slow dum-cooked Chicken Tikka Biryani, now ₹288 per kg (20% off).">
 <meta name="twitter:card" content="summary"><meta name="theme-color" content="#17201f">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FoodEstablishment","name":"The Bowl Biryani","slogan":"Authentic. Flavorful. Delightful.","description":"Pre-order Chicken Tikka Biryani, slow dum-cooked with Basmati rice and authentic spices.","servesCuisine":"Biryani","priceRange":"₹72–₹288","sameAs":["https://www.instagram.com/thebowlbiryani"],"address":{"@type":"PostalAddress","streetAddress":"Trimurty Kohinoor Garden, New Sanganer Rd","addressLocality":"Jaipur","addressRegion":"Rajasthan","postalCode":"302029","addressCountry":"IN"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FoodEstablishment","name":"The Bowl Biryani","slogan":"Authentic. Flavorful. Delightful.","description":"Pre-order Chicken Tikka Biryani, slow dum-cooked with Basmati rice and authentic spices.","servesCuisine":"Biryani","priceRange":"₹81–₹288","sameAs":["https://www.instagram.com/thebowlbiryani"],"address":{"@type":"PostalAddress","streetAddress":"Trimurty Kohinoor Garden, New Sanganer Rd","addressLocality":"Jaipur","addressRegion":"Rajasthan","postalCode":"302029","addressCountry":"IN"}}</script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Poppins:wght@400;500;600&display=swap">
 <style>
 :root{--bg:#fbf4e6;--card:#fff;--ink:#2a1a10;--mut:#7b6657;--gold:#c8962e;--red:#b83a1e;--line:#eadbbf;--ok:#1f8a4c;--bad:#c0392b;
@@ -123,7 +123,7 @@ input,textarea,select{transition:border-color .2s,box-shadow .2s}
 <div class="lead">Slow dum-cooked chicken tikka biryani, made fresh for you</div>
 <div id="st" class="pill"><span class="dot"></span><span id="st1">Kitchen closed</span></div>
 <div class="sub" id="st2"></div>
-<a class="cta" href="#order">Order now</a><br><div class="promo">🎉 20% OFF on all orders</div>
+<a class="cta" href="#order">Order now</a><br><div class="promo">🎉 Up to 20% OFF — bigger pack, bigger saving</div>
 </header>
 <main class="w">
 <h2><small>Why you'll love it</small>Made with care</h2>
@@ -141,11 +141,11 @@ input,textarea,select{transition:border-color .2s,box-shadow .2s}
 <div class="qty"><button data-i="1" data-d="-1" aria-label="less">−</button><output id="q1">1</output><button data-i="1" data-d="1" aria-label="more">+</button></div>
 </div>
 <div class="menu" style="margin-top:12px">
-<div><h3>Chicken Tikka Biryani · 500 g</h3><div class="price">₹144 <s>₹180</s> <span class="off">20% OFF</span></div><span class="chip">🍗 5 chicken pieces</span> <span class="chip">👥 Serves 1–2 persons</span></div>
+<div><h3>Chicken Tikka Biryani · 500 g</h3><div class="price">₹153 <s>₹180</s> <span class="off">15% OFF</span></div><span class="chip">🍗 5 chicken pieces</span> <span class="chip">👥 Serves 1–2 persons</span></div>
 <div class="qty"><button data-i="0" data-d="-1" aria-label="less">−</button><output id="q0">0</output><button data-i="0" data-d="1" aria-label="more">+</button></div>
 </div>
 <div class="menu" style="margin-top:12px">
-<div><h3>Chicken Tikka Biryani · 250 g</h3><div class="price">₹72 <s>₹90</s> <span class="off">20% OFF</span></div><span class="chip">🍗 2 chicken pieces</span> <span class="chip">👥 Serves 1 person</span></div>
+<div><h3>Chicken Tikka Biryani · 250 g</h3><div class="price">₹81 <s>₹90</s> <span class="off">10% OFF</span></div><span class="chip">🍗 2 chicken pieces</span> <span class="chip">👥 Serves 1 person</span></div>
 <div class="qty"><button data-i="2" data-d="-1" aria-label="less">−</button><output id="q2">0</output><button data-i="2" data-d="1" aria-label="more">+</button></div>
 </div>
 <p class="note" style="text-align:center;margin:12px 0 0">🚚 Delivery from ₹40, depending on distance</p>
@@ -185,7 +185,7 @@ input,textarea,select{transition:border-color .2s,box-shadow .2s}
 </main>
 <div class="bar"><div class="in"><div><small id="bs">1 kg</small><b id="tt">₹360</b></div><button class="btn" id="go" disabled>Place order on WhatsApp</button></div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script type="application/json" id="state">{"open":true,"note":"","opensAt":"","closesAt":""}</script>
+<script type="application/json" id="state">{"open":false,"note":"","opensAt":"","closesAt":""}</script>
 <script>
 const WA="919571923982"; // business WhatsApp number
 const UPI="9571923982-2@ybl";
@@ -193,7 +193,7 @@ let lastQ="",qr=null;
 function drawQR(l){const b=$("qr");if(typeof QRCode==="undefined"){b.parentNode.style.display="none";return}
  try{if(!qr)qr=new QRCode(b,{text:l,width:176,height:176,colorDark:"#000000",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M});else qr.makeCode(l)}catch(e){b.parentNode.style.display="none"}}
 const P=[180,360,90],N=["500 g","1 kg","250 g"],q=[0,1,0];
-const D=.2,E=P.map(x=>Math.round(x*(1-D)));
+const DS=[.15,.20,.10],E=P.map((x,i)=>Math.round(x*(1-DS[i])));
 const tot=()=>q.reduce((s,n,i)=>s+n*E[i],0),full=()=>q.reduce((s,n,i)=>s+n*P[i],0);
 const $=i=>document.getElementById(i);
 const S=JSON.parse($("state").textContent);
@@ -241,7 +241,7 @@ $("go").onclick=()=>{
  const items=q.map((n,i)=>n?`• Chicken Tikka Biryani ${N[i]} × ${n} = ₹${n*E[i]}`:"").filter(Boolean).join("\n");
  const ad=$("ad").value.trim(),nt=$("nt").value.trim();
  const wt=!when?"Next available batch":when.toLocaleDateString("en-IN",{weekday:"short",day:"numeric",month:"short",year:"numeric"})+", "+when.toLocaleTimeString("en-IN",{hour:"numeric",minute:"2-digit",hour12:true});
- let m=`🍗 *New order — The Bowl Biryani*\n\n*Order*\n${items}\n*20% OFF applied — you saved ₹${full()-t}*\n*Total: ₹${t}*${del?" (+ delivery from ₹40, to be confirmed)":""}\n\n*Payment:* ${pre?"Pre-paid via UPI (₹"+t+") — screenshot to follow":"Pay on delivery"}\n*Name:* ${nm}\n*Phone:* ${ph}\n*Order type:* ${$("md").value}\n*${del?"Delivery":"Pickup"} time:* ${wt}`;
+ let m=`🍗 *New order — The Bowl Biryani*\n\n*Order*\n${items}\n*Discount applied — you saved ₹${full()-t}*\n*Total: ₹${t}*${del?" (+ delivery from ₹40, to be confirmed)":""}\n\n*Payment:* ${pre?"Pre-paid via UPI (₹"+t+") — screenshot to follow":"Pay on delivery"}\n*Name:* ${nm}\n*Phone:* ${ph}\n*Order type:* ${$("md").value}\n*${del?"Delivery":"Pickup"} time:* ${wt}`;
  if(del)m+=`\n*Delivery address:* ${ad}`;
  if(nt)m+=`\n*Notes:* ${nt}`;
  if(/X/.test(WA)){const o=$("out");o.style.display="block";o.textContent=m;
