@@ -166,7 +166,7 @@ input,textarea,select{transition:border-color .2s,box-shadow .2s}
 <div class="card">
 <label class="pay on" id="p0"><input type="radio" name="pm" value="cod" checked><span><b>Pay on delivery</b><small>Cash or UPI when your biryani arrives</small></span></label>
 <label class="pay" id="p1"><input type="radio" name="pm" value="pre"><span><b>Pay online now</b><small>UPI, cards or netbanking — secure &amp; confirmed instantly</small></span></label>
-<div id="paid" style="display:none;margin-top:14px;text-align:center;border:2px solid var(--ok);border-radius:14px;padding:14px"><b>✅ Payment received — thank you!</b><div class="note" style="margin:6px 0 10px">Tap below to send your order details to us on WhatsApp so we can confirm your batch.</div><a class="btn" id="wa2" href="#" target="_blank" rel="noopener" style="display:block;text-decoration:none;text-align:center;max-width:none;max-width:100%">Send order on WhatsApp</a></div>
+<div id="paid" style="display:none;margin-top:14px;text-align:center;border:2px solid var(--ok);border-radius:14px;padding:14px"><b id="pt">✅ Payment received — thank you!</b><div class="note" id="ps" style="margin:6px 0 10px">Tap below to send your order details to us on WhatsApp so we can confirm your batch.</div><a class="btn" id="wa2" href="#" target="_blank" rel="noopener" style="display:block;text-decoration:none;text-align:center;max-width:none;max-width:100%">Send order on WhatsApp</a></div>
 <p class="note" id="gm" style="margin-bottom:0">Your order is sent as a WhatsApp message and we confirm it with you.</p>
 <div id="out"></div>
 </div>
@@ -199,7 +199,7 @@ function stat(){
  if(a&&b){if(n>=a&&n<b)return{open:true,until:b};if(n<a)return{open:false,at:a};return{open:false}}
  if(a&&n<a)return{open:false,at:a};
  return{open:!!S.open,until:b>n?b:0}}
-function inWin(){const [h,m]=new Date().toLocaleTimeString("en-GB",{timeZone:"Asia/Kolkata",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).split(":").map(Number),x=h*60+m;return x>=420&&x<1440}
+function inWin(){const [h,m]=new Date().toLocaleTimeString("en-GB",{timeZone:"Asia/Kolkata",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).split(":").map(Number),x=h*60+m;return x>=420&&x<840}
 function render(){
  const st=stat(),o=st.open,pre=pm()=="pre",t=tot();
  $("st").className="pill"+(o?" open":"");
@@ -238,11 +238,18 @@ $("go").onclick=async()=>{
   if(nt)m+=`\n*Notes:* ${nt}`;
   return m};
  const wa=m=>"https://wa.me/"+WA+"?text="+encodeURIComponent(m);
- if(!pre){window.open(wa(mk("Pay on delivery")),"_blank");return}
- const btn=$("go");btn.disabled=true;btn.textContent="Starting payment…";
+ const btn=$("go");
  const post=(u,b)=>fetch(u,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b)}).then(async r=>({ok:r.ok,d:await r.json().catch(()=>({}))}));
+ const payload={q,name:nm,phone:ph,mode:$("md").value,address:ad,notes:nt,date:dv,time:tv};
+ const done=(title,sub,url)=>{paidDone=true;$("pt").textContent=title;$("ps").textContent=sub;$("wa2").href=url;$("paid").style.display="block";$("paid").scrollIntoView({behavior:"smooth",block:"center"})};
+ btn.disabled=true;btn.textContent=pre?"Starting payment…":"Placing your order…";
+ if(!pre){
+  try{const c=await post("/api/place-order",payload);if(!c.ok)throw new Error(c.d.error||"Could not place your order. Please try again.");
+   done("✅ Order placed!","Pay on delivery. Tap below to also send the details on WhatsApp so we can confirm faster.",wa(mk("Pay on delivery")))}
+  catch(e){alert(e.message)}
+  render();return}
  try{
-  const c=await post("/api/create-order",{q,name:nm,phone:ph,mode:$("md").value,address:ad,notes:nt,date:dv,time:tv});
+  const c=await post("/api/create-order",payload);
   if(!c.ok)throw new Error(c.d.error||"Could not start payment. Please try again.");
   const r=await new Promise((res,rej)=>{
    const rz=new Razorpay({key:c.d.keyId,amount:c.d.amount,currency:"INR",name:"The Bowl Biryani",description:"Chicken Tikka Biryani pre-order",order_id:c.d.orderId,prefill:{name:nm,contact:ph,method:"upi"},theme:{color:"#b83a1e"},
@@ -251,14 +258,13 @@ $("go").onclick=async()=>{
     modal:{ondismiss:()=>rej(new Error("cancelled"))}});
    rz.on("payment.failed",x=>rej(new Error((x.error&&x.error.description)||"Payment failed")));
    rz.open()});
-  paidDone=true;
-  $("paid").style.display="block";
-  $("wa2").href=wa(mk("Paid online via Razorpay ✅ (₹"+t+") — Payment ID: "+r.resp.razorpay_payment_id+(r.v?"":" (verification pending)")));
-  $("paid").scrollIntoView({behavior:"smooth",block:"center"});
+  done("✅ Payment received — thank you!","Tap below to send your order details to us on WhatsApp so we can confirm your batch.",wa(mk("Paid online via Razorpay ✅ (₹"+t+") — Payment ID: "+r.resp.razorpay_payment_id+(r.v?"":" (verification pending)"))));
  }catch(e){if(e.message!=="cancelled")alert(e.message)}
  render();
 };
 render();setInterval(render,30000);
+const loadStatus=()=>fetch("/api/status",{cache:"no-store"}).then(r=>r.json()).then(d=>{if(d&&d.kitchen){Object.assign(S,d.kitchen);render()}}).catch(()=>{});
+loadStatus();setInterval(loadStatus,60000);
 {const td=new Date().toLocaleDateString("en-CA",{timeZone:"Asia/Kolkata"});$("dt").min=td;$("dt").value=td}
 const logo=document.querySelector(".logo"),slot=document.querySelector(".slot"),bar=$("topbar"),btxt=bar.querySelector("a");
 let tick=false;
