@@ -24,7 +24,7 @@ module.exports = async (req, res) => {
       .toLocaleTimeString("en-GB", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", hourCycle: "h23" })
       .split(":").map(Number);
     const mins = h * 60 + m;
-    if (mins < 420 || mins >= 1440)
+    if (mins < 420 || mins >= 840)
       return res.status(400).json({ error: "Orders are accepted between 7 AM and 2 PM." });
 
     const mode = b.mode === "Pickup" ? "Pickup" : "Delivery";
