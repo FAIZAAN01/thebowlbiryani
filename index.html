@@ -193,13 +193,13 @@ const pm=()=>document.querySelector('input[name="pm"]:checked').value;
 const fmt=ms=>new Date(ms).toLocaleString("en-IN",{timeZone:"Asia/Kolkata",weekday:"short",day:"numeric",month:"short",hour:"numeric",minute:"2-digit",hour12:true});
 const day=ms=>new Date(ms).toLocaleDateString("en-CA",{timeZone:"Asia/Kolkata"});
 const fmtOpen=ms=>day(ms)==day(Date.now())?new Date(ms).toLocaleTimeString("en-IN",{timeZone:"Asia/Kolkata",hour:"numeric",minute:"2-digit",hour12:true}).replace(/\b(am|pm)\b/,m=>m.toUpperCase()):fmt(ms).replace(/\b(am|pm)\b/,m=>m.toUpperCase());
-const left=ms=>{const m=Math.max(1,Math.round(ms/60000)),d=Math.floor(m/1640),h=Math.floor(m%1440/60),mm=m%60;return d?`${d}d ${h}h`:h?`${h}h ${mm}m`:`${mm}m`};
+const left=ms=>{const m=Math.max(1,Math.round(ms/60000)),d=Math.floor(m/1440),h=Math.floor(m%1440/60),mm=m%60;return d?`${d}d ${h}h`:h?`${h}h ${mm}m`:`${mm}m`};
 function stat(){
  const n=Date.now(),a=S.opensAt?+new Date(S.opensAt):0,b=S.closesAt?+new Date(S.closesAt):0;
  if(a&&b){if(n>=a&&n<b)return{open:true,until:b};if(n<a)return{open:false,at:a};return{open:false}}
  if(a&&n<a)return{open:false,at:a};
  return{open:!!S.open,until:b>n?b:0}}
-function inWin(){const [h,m]=new Date().toLocaleTimeString("en-GB",{timeZone:"Asia/Kolkata",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).split(":").map(Number),x=h*60+m;return x>=420&&x<840}
+function inWin(){const [h,m]=new Date().toLocaleTimeString("en-GB",{timeZone:"Asia/Kolkata",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).split(":").map(Number),x=h*60+m;return x>=420&&x<1440}
 function render(){
  const st=stat(),o=st.open,pre=pm()=="pre",t=tot();
  $("st").className="pill"+(o?" open":"");
