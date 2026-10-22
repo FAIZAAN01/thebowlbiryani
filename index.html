@@ -199,7 +199,7 @@ function stat(){
  if(a&&b){if(n>=a&&n<b)return{open:true,until:b};if(n<a)return{open:false,at:a};return{open:false}}
  if(a&&n<a)return{open:false,at:a};
  return{open:!!S.open,until:b>n?b:0}}
-function inWin(){const [h,m]=new Date().toLocaleTimeString("en-GB",{timeZone:"Asia/Kolkata",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).split(":").map(Number),x=h*60+m;return x>=420&&x<1440}
+function inWin(){const [h,m]=new Date().toLocaleTimeString("en-GB",{timeZone:"Asia/Kolkata",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).split(":").map(Number),x=h*60+m;return x>=420&&x<840}
 function render(){
  const st=stat(),o=st.open,pre=pm()=="pre",t=tot();
  $("st").className="pill"+(o?" open":"");
@@ -245,7 +245,7 @@ $("go").onclick=async()=>{
   const c=await post("/api/create-order",{q,name:nm,phone:ph,mode:$("md").value,address:ad,notes:nt,date:dv,time:tv});
   if(!c.ok)throw new Error(c.d.error||"Could not start payment. Please try again.");
   const r=await new Promise((res,rej)=>{
-   const rz=new Razorpay({key:c.d.keyId,amount:c.d.amount,currency:"INR",name:"The Bowl Biryani",description:"Chicken Tikka Biryani pre-order",order_id:c.d.orderId,prefill:{name:nm,contact:ph},theme:{color:"#b83a1e"},
+   const rz=new Razorpay({key:c.d.keyId,amount:c.d.amount,currency:"INR",name:"The Bowl Biryani",description:"Chicken Tikka Biryani pre-order",order_id:c.d.orderId,prefill:{name:nm,contact:ph,method:"upi"},theme:{color:"#b83a1e"},
     handler:async resp=>{let v=false;try{const x=await post("/api/verify-payment",resp);v=x.ok&&x.d.ok}catch(e){}res({resp,v})},
     modal:{ondismiss:()=>rej(new Error("cancelled"))}});
    rz.on("payment.failed",x=>rej(new Error((x.error&&x.error.description)||"Payment failed")));

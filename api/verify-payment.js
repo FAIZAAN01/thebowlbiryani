@@ -6,7 +6,7 @@ module.exports = async (req, res) => {
   try {
     const b = typeof req.body === "string" ? JSON.parse(req.body) : req.body || {};
     const o = b.razorpay_order_id, p = b.razorpay_payment_id, s = b.razorpay_signature;
-    const secret = process.env.RAZORPAY_KEY_SECRET;
+    const secret = process.env.RAZORPAY_KEY_SECRET || process.env.key_secret;
     if (!secret || typeof o !== "string" || typeof p !== "string" || typeof s !== "string")
       return res.status(400).json({ ok: false });
     const exp = crypto.createHmac("sha256", secret).update(o + "|" + p).digest("hex");

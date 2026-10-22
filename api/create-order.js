@@ -1,5 +1,5 @@
 // POST /api/create-order  — builds the price on the server and creates a Razorpay order.
-// Needs env vars: RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET
+// Needs env vars: RAZORPAY_KEY_ID + RAZORPAY_KEY_SECRET (or key_id + key_secret)
 
 const P = [180, 360, 90];            // 500 g, 1 kg, 250 g  (same order as the website)
 const DS = [0.10, 0.15, 0.05];       // discounts for 500 g, 1 kg, 250 g
@@ -24,7 +24,7 @@ module.exports = async (req, res) => {
       .toLocaleTimeString("en-GB", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", hourCycle: "h23" })
       .split(":").map(Number);
     const mins = h * 60 + m;
-    if (mins < 420 || mins >= 1440)
+    if (mins < 420 || mins >= 840)
       return res.status(400).json({ error: "Orders are accepted between 7 AM and 2 PM." });
 
     const mode = b.mode === "Pickup" ? "Pickup" : "Delivery";
@@ -34,7 +34,8 @@ module.exports = async (req, res) => {
     const name = clip(b.name, 80), phone = clip(b.phone, 20);
     if (!name || !phone) return res.status(400).json({ error: "Name and phone are required." });
 
-    const keyId = process.env.RAZORPAY_KEY_ID, secret = process.env.RAZORPAY_KEY_SECRET;
+    const keyId = process.env.RAZORPAY_KEY_ID || process.env.key_id,
+      secret = process.env.RAZORPAY_KEY_SECRET || process.env.key_secret;
     if (!keyId || !secret) return res.status(500).json({ error: "Online payment is not set up yet." });
 
     const items = q.map((n, i) => (n ? `${n} x ${NAMES[i]}` : "")).filter(Boolean).join(", ");
