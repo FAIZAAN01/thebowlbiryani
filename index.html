@@ -156,7 +156,7 @@ input,textarea,select{transition:border-color .2s,box-shadow .2s}
 <label class="l" for="ph">Phone / WhatsApp</label><input type="tel" id="ph" autocomplete="tel">
 <label class="l" for="md">Pickup or delivery</label><select id="md"><option>Delivery</option><option>Pickup</option></select>
 <div id="sch"><div class="two"><div><label class="l" for="dt">Date *</label><input type="date" id="dt" required></div><div><label class="l" for="tm">Time * (7 PM onwards)</label><select id="tm" required><option value="">Select time</option><option value="19:00">7:00 PM</option><option value="19:30">7:30 PM</option><option value="20:00">8:00 PM</option><option value="20:30">8:30 PM</option><option value="21:00">9:00 PM</option><option value="21:30">9:30 PM</option><option value="22:00">10:00 PM</option><option value="22:30">10:30 PM</option><option value="23:00">11:00 PM</option><option value="23:30">11:30 PM</option></select></div></div>
-<p class="note" style="margin:6px 0 0">Delivery / pickup from 7:00 PM onwards. Orders are accepted between 7 AM and 2 PM.</p></div>
+<p class="note" style="margin:6px 0 0">Delivery / pickup from 7:00 PM onwards. Orders are accepted between 7 AM and 6 PM.</p></div>
 <label class="l" for="ad">Address (for delivery)</label><textarea id="ad" rows="2"></textarea>
 <label class="l" for="nt">Notes</label><input type="text" id="nt" placeholder="Spice level, preferred time, etc.">
 <p class="note" id="dn" style="margin-bottom:0">Delivery charge: ₹40 onwards, depending on distance — we'll confirm it on WhatsApp. Your total is for the biryani only.</p>
@@ -199,7 +199,8 @@ function stat(){
  if(a&&b){if(n>=a&&n<b)return{open:true,until:b};if(n<a)return{open:false,at:a};return{open:false}}
  if(a&&n<a)return{open:false,at:a};
  return{open:!!S.open,until:b>n?b:0}}
-function inWin(){const [h,m]=new Date().toLocaleTimeString("en-GB",{timeZone:"Asia/Kolkata",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).split(":").map(Number),x=h*60+m;return x>=420&&x<840}
+function istMin(){const [h,m]=new Date().toLocaleTimeString("en-GB",{timeZone:"Asia/Kolkata",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).split(":").map(Number);return h*60+m}
+function inWin(){const x=istMin();return x>=420&&x<1080}
 function render(){
  const st=stat(),o=st.open,pre=pm()=="pre",t=tot();
  $("st").className="pill"+(o?" open":"");
@@ -212,14 +213,14 @@ function render(){
  $("dn").style.display=$("md").value=="Delivery"?"block":"none";
  const win=inWin();
  $("go").disabled=!o||!t||!win;
- $("go").textContent=!o?(st.at?"Will open at "+fmtOpen(st.at):"Ordering is closed"):(!win?"Orders open 7 AM – 2 PM":(pre?"Pay ₹"+t+" securely":"Place order on WhatsApp"));
+ $("go").textContent=!o?(st.at?"Will open at "+fmtOpen(st.at):"Ordering is closed"):(!win?(istMin()<420?"Orders open today from 7 AM":"Orders closed — reopen tomorrow 7 AM"):(pre?"Pay ₹"+t+" securely":"Place order on WhatsApp"));
  if(paidDone){$("go").disabled=true;$("go").textContent="Payment complete ✓"}
 }
 document.querySelectorAll("[data-i]").forEach(b=>b.onclick=()=>{const i=+b.dataset.i;q[i]=Math.max(0,Math.min(20,q[i]+ +b.dataset.d));render()});
 document.querySelectorAll('input[name="pm"]').forEach(r=>r.onchange=render);
 $("md").onchange=render;
 $("go").onclick=async()=>{
- if(!inWin()){alert("Orders are accepted between 7 AM and 2 PM.");return}
+ if(!inWin()){alert("Orders are accepted between 7 AM and 6 PM.");return}
  const nm=$("nm").value.trim(),ph=$("ph").value.trim(),pre=pm()=="pre",del=$("md").value=="Delivery";
  if(!nm||!ph){alert("Please add your name and phone.");$("nm").scrollIntoView({block:"center"});return}
  if(del&&!$("ad").value.trim()){alert("Please add a delivery address.");return}
