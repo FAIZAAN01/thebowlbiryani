@@ -199,7 +199,7 @@ function stat(){
  if(a&&b){if(n>=a&&n<b)return{open:true,until:b};if(n<a)return{open:false,at:a};return{open:false}}
  if(a&&n<a)return{open:false,at:a};
  return{open:!!S.open,until:b>n?b:0}}
-function inWin(){const [h,m]=new Date().toLocaleTimeString("en-GB",{timeZone:"Asia/Kolkata",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).split(":").map(Number),x=h*60+m;return x>=420&&x<840}
+function inWin(){const [h,m]=new Date().toLocaleTimeString("en-GB",{timeZone:"Asia/Kolkata",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).split(":").map(Number),x=h*60+m;return x>=420&&x<1440}
 function render(){
  const st=stat(),o=st.open,pre=pm()=="pre",t=tot();
  $("st").className="pill"+(o?" open":"");
