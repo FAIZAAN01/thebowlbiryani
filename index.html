@@ -160,7 +160,7 @@ input,textarea,select{transition:border-color .2s,box-shadow .2s}
 <h2><small>Step 1</small>Your details</h2>
 <div class="card">
 <label class="l" for="nm">Name</label><input type="text" id="nm" autocomplete="name">
-<label class="l" for="ph">Phone / WhatsApp</label><input type="tel" id="ph" autocomplete="tel">
+<label class="l" for="ph">Phone number</label><input type="tel" id="ph" autocomplete="tel">
 <label class="l">How would you like your order? *</label>
 <input type="hidden" id="md" value="Delivery">
 <div class="modes">
@@ -195,7 +195,7 @@ input,textarea,select{transition:border-color .2s,box-shadow .2s}
 </div>
 <footer>Follow <a href="https://www.instagram.com/thebowlbiryani" target="_blank" rel="noopener">@thebowlbiryani</a> on Instagram Stories for the next batch <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="vertical-align:-3px"><rect width="24" height="24" rx="6.5" fill="url(#ig)"/><rect x="5" y="5" width="14" height="14" rx="4" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.2" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="16.3" cy="7.7" r="1.1" fill="#fff"/></svg><br>The Bowl Biryani — Authentic. Flavorful. Delightful.</footer>
 </main>
-<div class="bar"><div class="in"><div><small id="bs">1 kg</small><b id="tt">₹360</b></div><button class="btn" id="go" disabled>Place order on WhatsApp</button></div></div>
+<div class="bar"><div class="in"><div><small id="bs">1 kg</small><b id="tt">₹360</b></div><button class="btn" id="go" disabled>Place order</button></div></div>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script type="application/json" id="state">{"open":true,"note":"","opensAt":"","closesAt":""}</script>
 <script>
@@ -231,7 +231,7 @@ function render(){
  $("p0").querySelector("small").textContent=isDel?"Cash or UPI when your biryani arrives":"Cash or UPI when you collect your order";
  const win=inWin();
  $("go").disabled=!o||!t||!win;
- $("go").textContent=!o?(st.at?"Will open at "+fmtOpen(st.at):"Ordering is closed"):(!win?(istMin()<420?"Orders open today from 7 AM":"Orders closed — reopen tomorrow 7 AM"):(pre?"Pay ₹"+t+" securely":"Place order on WhatsApp"));
+ $("go").textContent=!o?(st.at?"Will open at "+fmtOpen(st.at):"Ordering is closed"):(!win?(istMin()<420?"Orders open today from 7 AM":"Orders closed — reopen tomorrow 7 AM"):(pre?"Pay ₹"+t+" securely":"Place order"));
  if(paidDone){$("go").disabled=true;$("go").textContent="Payment complete ✓"}
 }
 document.querySelectorAll("[data-i]").forEach(b=>b.onclick=()=>{const i=+b.dataset.i;q[i]=Math.max(0,Math.min(20,q[i]+ +b.dataset.d));render()});
