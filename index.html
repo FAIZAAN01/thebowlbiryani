@@ -166,8 +166,8 @@ input,textarea,select{transition:border-color .2s,box-shadow .2s}
 <div class="card">
 <label class="pay on" id="p0"><input type="radio" name="pm" value="cod" checked><span><b>Pay on delivery</b><small>Cash or UPI when your biryani arrives</small></span></label>
 <label class="pay" id="p1"><input type="radio" name="pm" value="pre"><span><b>Pay online now</b><small>UPI, cards or netbanking — secure &amp; confirmed instantly</small></span></label>
-<div id="paid" style="display:none;margin-top:14px;text-align:center;border:2px solid var(--ok);border-radius:14px;padding:14px"><b id="pt">✅ Payment received — thank you!</b><div class="note" id="ps" style="margin:6px 0 10px">Tap below to send your order details to us on WhatsApp so we can confirm your batch.</div><a class="btn" id="wa2" href="#" target="_blank" rel="noopener" style="display:block;text-decoration:none;text-align:center;max-width:none;max-width:100%">Send order on WhatsApp</a></div>
-<p class="note" id="gm" style="margin-bottom:0">Your order is sent as a WhatsApp message and we confirm it with you.</p>
+<div id="paid" style="display:none;margin-top:14px;text-align:center;border:2px solid var(--ok);border-radius:14px;padding:14px"><b id="pt">✅ Order placed!</b><div class="note" id="ps" style="margin:6px 0 0"></div></div>
+<p class="note" id="gm" style="margin-bottom:0">Your order goes straight to our kitchen — no extra steps.</p>
 <div id="out"></div>
 </div>
 <h2><small>Find us</small>Visit or follow</h2>
@@ -182,7 +182,6 @@ input,textarea,select{transition:border-color .2s,box-shadow .2s}
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script type="application/json" id="state">{"open":true,"note":"","opensAt":"","closesAt":""}</script>
 <script>
-const WA="919571923982"; // business WhatsApp number
 let paidDone=false;
 const P=[180,360,90],N=["500 g","1 kg","250 g"],q=[0,1,0];
 const DS=[.10,.15,.05],E=P.map((x,i)=>Math.round(x*(1-DS[i])));
@@ -230,36 +229,28 @@ $("go").onclick=async()=>{
  const nowI=new Date(),istDay=nowI.toLocaleDateString("en-CA",{timeZone:"Asia/Kolkata"}),istHr=+nowI.toLocaleTimeString("en-GB",{timeZone:"Asia/Kolkata",hour:"2-digit",hourCycle:"h23"});
  if(dv<istDay){alert("Please choose today or a later date.");return}
  const when=new Date(dv+"T"+tv);
- const t=tot();
- const items=q.map((n,i)=>n?`• Chicken Tikka Biryani ${N[i]} × ${n} = ₹${n*E[i]}`:"").filter(Boolean).join("\n");
  const ad=$("ad").value.trim(),nt=$("nt").value.trim();
- const wt=!when?"Next available batch":when.toLocaleDateString("en-IN",{weekday:"short",day:"numeric",month:"short",year:"numeric"})+", "+when.toLocaleTimeString("en-IN",{hour:"numeric",minute:"2-digit",hour12:true});
- const mk=pay=>{let m=`🍗 *New order — The Bowl Biryani*\n\n*Order*\n${items}\n*Discount applied — you saved ₹${full()-t}*\n*Total: ₹${t}*${del?" (+ delivery from ₹40, to be confirmed)":""}\n\n*Payment:* ${pay}\n*Name:* ${nm}\n*Phone:* ${ph}\n*Order type:* ${$("md").value}\n*${del?"Delivery":"Pickup"} time:* ${wt}`;
-  if(del)m+=`\n*Delivery address:* ${ad}`;
-  if(nt)m+=`\n*Notes:* ${nt}`;
-  return m};
- const wa=m=>"https://wa.me/"+WA+"?text="+encodeURIComponent(m);
  const btn=$("go");
  const post=(u,b)=>fetch(u,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b)}).then(async r=>({ok:r.ok,d:await r.json().catch(()=>({}))}));
  const payload={q,name:nm,phone:ph,mode:$("md").value,address:ad,notes:nt,date:dv,time:tv};
- const done=(title,sub,url)=>{paidDone=true;$("pt").textContent=title;$("ps").textContent=sub;$("wa2").href=url;$("paid").style.display="block";$("paid").scrollIntoView({behavior:"smooth",block:"center"})};
+ const done=(title,sub)=>{paidDone=true;$("pt").textContent=title;$("ps").textContent=sub;$("paid").style.display="block";$("paid").scrollIntoView({behavior:"smooth",block:"center"})};
  btn.disabled=true;btn.textContent=pre?"Starting payment…":"Placing your order…";
  if(!pre){
   try{const c=await post("/api/place-order",payload);if(!c.ok)throw new Error(c.d.error||"Could not place your order. Please try again.");
-   done("✅ Order placed!","Pay on delivery. Tap below to also send the details on WhatsApp so we can confirm faster.",wa(mk("Pay on delivery")))}
+   done("✅ Order placed!","Thank you, "+nm+"! Pay on delivery. We've received your order and will be in touch shortly.")}
   catch(e){alert(e.message)}
   render();return}
  try{
   const c=await post("/api/create-order",payload);
   if(!c.ok)throw new Error(c.d.error||"Could not start payment. Please try again.");
-  const r=await new Promise((res,rej)=>{
+  await new Promise((res,rej)=>{
    const rz=new Razorpay({key:c.d.keyId,amount:c.d.amount,currency:"INR",name:"The Bowl Biryani",description:"Chicken Tikka Biryani pre-order",order_id:c.d.orderId,prefill:{name:nm,contact:ph,method:"upi"},theme:{color:"#b83a1e"},
     config:{display:{blocks:{upi:{name:"Pay with your UPI app",instruments:[{method:"upi",flows:["intent"],apps:["google_pay","phonepe"]}]}},sequence:["block.upi"],preferences:{show_default_blocks:true}}},
-    handler:async resp=>{let v=false;try{const x=await post("/api/verify-payment",resp);v=x.ok&&x.d.ok}catch(e){}res({resp,v})},
+    handler:async resp=>{try{await post("/api/verify-payment",resp)}catch(e){}res()},
     modal:{ondismiss:()=>rej(new Error("cancelled"))}});
    rz.on("payment.failed",x=>rej(new Error((x.error&&x.error.description)||"Payment failed")));
    rz.open()});
-  done("✅ Payment received — thank you!","Tap below to send your order details to us on WhatsApp so we can confirm your batch.",wa(mk("Paid online via Razorpay ✅ (₹"+t+") — Payment ID: "+r.resp.razorpay_payment_id+(r.v?"":" (verification pending)"))));
+  done("✅ Payment received — order placed!","Thank you, "+nm+"! Your order is confirmed and on its way to our kitchen.");
  }catch(e){if(e.message!=="cancelled")alert(e.message)}
  render();
 };

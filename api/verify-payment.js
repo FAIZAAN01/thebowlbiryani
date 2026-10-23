@@ -1,6 +1,6 @@
-// POST /api/verify-payment — checks Razorpay's signature, then marks the order as paid.
+// POST /api/verify-payment — checks Razorpay's signature, then marks the order paid and alerts you.
 const crypto = require("crypto");
-const { db, configured } = require("../lib/db");
+const { markPaidAndNotify } = require("../lib/pay");
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") return res.status(405).json({ ok: false });
@@ -12,12 +12,7 @@ module.exports = async (req, res) => {
       return res.status(400).json({ ok: false });
     const exp = crypto.createHmac("sha256", secret).update(o + "|" + p).digest("hex");
     const ok = exp.length === s.length && crypto.timingSafeEqual(Buffer.from(exp), Buffer.from(s));
-    if (ok && configured()) {
-      try {
-        await db("orders?razorpay_order_id=eq." + encodeURIComponent(o),
-          { method: "PATCH", prefer: "return=minimal", body: { payment_status: "paid", razorpay_payment_id: p } });
-      } catch (e) { /* signature was valid; the dashboard still shows the payment */ }
-    }
+    if (ok) { try { await markPaidAndNotify(o, p); } catch (e) { /* payment is still valid */ } }
     return res.status(ok ? 200 : 400).json({ ok });
   } catch (e) {
     return res.status(400).json({ ok: false });
