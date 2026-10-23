@@ -199,7 +199,6 @@ input,textarea,select{transition:border-color .2s,box-shadow .2s}
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script type="application/json" id="state">{"open":true,"note":"","opensAt":"","closesAt":""}</script>
 <script>
-let paidDone=false;
 const P=[180,360,90],N=["500 g","1 kg","250 g"],q=[0,1,0];
 const DS=[.10,.15,.05],E=P.map((x,i)=>Math.round(x*(1-DS[i])));
 const tot=()=>q.reduce((s,n,i)=>s+n*E[i],0),full=()=>q.reduce((s,n,i)=>s+n*P[i],0);
@@ -217,6 +216,7 @@ function stat(){
  return{open:!!S.open,until:b>n?b:0}}
 function istMin(){const [h,m]=new Date().toLocaleTimeString("en-GB",{timeZone:"Asia/Kolkata",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).split(":").map(Number);return h*60+m}
 function inWin(){const x=istMin();return x>=420&&x<1080}
+function resetForm(){q[0]=0;q[1]=1;q[2]=0;$("nt").value="";$("tm").value="";$("dt").value=new Date().toLocaleDateString("en-CA",{timeZone:"Asia/Kolkata"})}
 function render(){
  const st=stat(),o=st.open,pre=pm()=="pre",t=tot();
  $("st").className="pill"+(o?" open":"");
@@ -232,9 +232,8 @@ function render(){
  const win=inWin();
  $("go").disabled=!o||!t||!win;
  $("go").textContent=!o?(st.at?"Will open at "+fmtOpen(st.at):"Ordering is closed"):(!win?(istMin()<420?"Orders open today from 7 AM":"Orders closed — reopen tomorrow 7 AM"):(pre?"Pay ₹"+t+" securely":"Place order"));
- if(paidDone){$("go").disabled=true;$("go").textContent="Payment complete ✓"}
 }
-document.querySelectorAll("[data-i]").forEach(b=>b.onclick=()=>{const i=+b.dataset.i;q[i]=Math.max(0,Math.min(20,q[i]+ +b.dataset.d));render()});
+document.querySelectorAll("[data-i]").forEach(b=>b.onclick=()=>{$("paid").style.display="none";const i=+b.dataset.i;q[i]=Math.max(0,Math.min(20,q[i]+ +b.dataset.d));render()});
 document.querySelectorAll('input[name="pm"]').forEach(r=>r.onchange=render);
 document.querySelectorAll(".mode").forEach(b=>b.onclick=()=>{$("md").value=b.dataset.m;document.querySelectorAll(".mode").forEach(x=>x.classList.toggle("on",x===b));render()});
 $("go").onclick=async()=>{
@@ -258,7 +257,7 @@ $("go").onclick=async()=>{
  const btn=$("go");
  const post=(u,b)=>fetch(u,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b)}).then(async r=>({ok:r.ok,d:await r.json().catch(()=>({}))}));
  const payload={q,name:nm,phone:ph,mode:$("md").value,address:ad,notes:nt,date:dv,time:tv};
- const done=(title,sub)=>{paidDone=true;$("pt").textContent=title;$("ps").textContent=sub;$("paid").style.display="block";$("paid").scrollIntoView({behavior:"smooth",block:"center"})};
+ const done=(title,sub)=>{$("pt").textContent=title;$("ps").textContent=sub;$("paid").style.display="block";$("paid").scrollIntoView({behavior:"smooth",block:"center"});resetForm()};
  btn.disabled=true;btn.textContent=pre?"Starting payment…":"Placing your order…";
  if(!pre){
   try{const c=await post("/api/place-order",payload);if(!c.ok)throw new Error(c.d.error||"Could not place your order. Please try again.");
