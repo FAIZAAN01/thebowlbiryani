@@ -82,6 +82,13 @@ footer a{color:var(--gold);font-weight:600;text-decoration:none}footer a:hover{t
 .off{font:600 .68rem var(--b);background:var(--red);color:#fff;border-radius:99px;padding:2px 9px;vertical-align:middle;letter-spacing:.04em}
 .promo{display:inline-block;margin-top:14px;padding:7px 16px;border-radius:99px;background:rgba(200,150,46,.22);border:1px solid var(--gold);color:#f3d58f;font-weight:600;font-size:.85rem}
 .hero>.promo{animation:up .7s .7s ease backwards}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mode{font:inherit;font-family:var(--b);color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:16px;padding:12px 8px;text-align:center;cursor:pointer;transition:border-color .25s,transform .25s,background .25s}
+.mode span{font-size:1.5rem;display:block}.mode b{display:block}.mode small{color:var(--mut);font-size:.72rem}
+.mode.on{border-color:var(--red);background:rgba(184,58,30,.07)}
+.mode:hover{border-color:var(--gold);transform:translateY(-2px)}
+.pickbox{margin-top:12px;border:1px dashed var(--gold);border-radius:14px;padding:12px;font-size:.9rem;animation:sd .35s ease}
+#addr{animation:sd .35s ease}
 /* motion */
 @keyframes dropIn{from{opacity:0;transform:translateY(-44px) scale(.82)}}
 @keyframes up{from{opacity:0;transform:translateY(26px)}}
@@ -154,12 +161,22 @@ input,textarea,select{transition:border-color .2s,box-shadow .2s}
 <div class="card">
 <label class="l" for="nm">Name</label><input type="text" id="nm" autocomplete="name">
 <label class="l" for="ph">Phone / WhatsApp</label><input type="tel" id="ph" autocomplete="tel">
-<label class="l" for="md">Pickup or delivery</label><select id="md"><option>Delivery</option><option>Pickup</option></select>
+<label class="l">How would you like your order? *</label>
+<input type="hidden" id="md" value="Delivery">
+<div class="modes">
+<button type="button" class="mode on" data-m="Delivery"><span>🚚</span><b>Delivery</b><small>To your door · from ₹40</small></button>
+<button type="button" class="mode" data-m="Pickup"><span>🏪</span><b>Pickup</b><small>Collect it yourself</small></button>
+</div>
+<div id="addr">
+<div class="two"><div><label class="l" for="a1">Flat / House no. *</label><input type="text" id="a1" autocomplete="address-line1"></div><div><label class="l" for="a2">Building / Society / Street *</label><input type="text" id="a2" autocomplete="address-line2"></div></div>
+<label class="l" for="a3">Area / Locality *</label><input type="text" id="a3" autocomplete="address-level3">
+<div class="two"><div><label class="l" for="a4">PIN code *</label><input type="text" id="a4" inputmode="numeric" maxlength="6" autocomplete="postal-code" placeholder="302029"></div><div><label class="l" for="a5">Landmark (optional)</label><input type="text" id="a5"></div></div>
+<p class="note" id="dn" style="margin:10px 0 0">Delivery charge: ₹40 onwards, depending on distance — we'll confirm it with you. Your total is for the biryani only.</p>
+</div>
+<div id="pick" class="pickbox" style="display:none">📍 <b>Pick up from</b><br>The Bowl Biryani, Trimurty Kohinoor Garden,<br>New Sanganer Rd, Jaipur, Rajasthan 302029<br><a href="https://www.google.com/maps/search/?api=1&amp;query=Trimurty%20Kohinoor%20Garden%2C%20New%20Sanganer%20Rd%2C%20Jaipur%2C%20Rajasthan%20302029" target="_blank" rel="noopener" style="color:var(--gold);font-weight:600">Open in Maps</a></div>
 <div id="sch"><div class="two"><div><label class="l" for="dt">Date *</label><input type="date" id="dt" required></div><div><label class="l" for="tm">Time * (7 PM onwards)</label><select id="tm" required><option value="">Select time</option><option value="19:00">7:00 PM</option><option value="19:30">7:30 PM</option><option value="20:00">8:00 PM</option><option value="20:30">8:30 PM</option><option value="21:00">9:00 PM</option><option value="21:30">9:30 PM</option><option value="22:00">10:00 PM</option><option value="22:30">10:30 PM</option><option value="23:00">11:00 PM</option><option value="23:30">11:30 PM</option></select></div></div>
 <p class="note" style="margin:6px 0 0">Delivery / pickup from 7:00 PM onwards. Orders are accepted between 7 AM and 6 PM.</p></div>
-<label class="l" for="ad">Address (for delivery)</label><textarea id="ad" rows="2"></textarea>
 <label class="l" for="nt">Notes</label><input type="text" id="nt" placeholder="Spice level, preferred time, etc.">
-<p class="note" id="dn" style="margin-bottom:0">Delivery charge: ₹40 onwards, depending on distance — we'll confirm it on WhatsApp. Your total is for the biryani only.</p>
 </div>
 
 <h2><small>Step 2</small>Payment</h2>
@@ -209,7 +226,9 @@ function render(){
  if(full()>t)$("bs").textContent+=" · you save ₹"+(full()-t);
  if($("tt").textContent!=="₹"+t){$("tt").classList.remove("bump");void $("tt").offsetWidth;$("tt").classList.add("bump")}$("tt").textContent="₹"+t;
  $("p0").classList.toggle("on",!pre);$("p1").classList.toggle("on",pre);
- $("dn").style.display=$("md").value=="Delivery"?"block":"none";
+ const isDel=$("md").value=="Delivery";
+ $("addr").style.display=isDel?"block":"none";$("pick").style.display=isDel?"none":"block";
+ $("p0").querySelector("small").textContent=isDel?"Cash or UPI when your biryani arrives":"Cash or UPI when you collect your order";
  const win=inWin();
  $("go").disabled=!o||!t||!win;
  $("go").textContent=!o?(st.at?"Will open at "+fmtOpen(st.at):"Ordering is closed"):(!win?(istMin()<420?"Orders open today from 7 AM":"Orders closed — reopen tomorrow 7 AM"):(pre?"Pay ₹"+t+" securely":"Place order on WhatsApp"));
@@ -217,19 +236,25 @@ function render(){
 }
 document.querySelectorAll("[data-i]").forEach(b=>b.onclick=()=>{const i=+b.dataset.i;q[i]=Math.max(0,Math.min(20,q[i]+ +b.dataset.d));render()});
 document.querySelectorAll('input[name="pm"]').forEach(r=>r.onchange=render);
-$("md").onchange=render;
+document.querySelectorAll(".mode").forEach(b=>b.onclick=()=>{$("md").value=b.dataset.m;document.querySelectorAll(".mode").forEach(x=>x.classList.toggle("on",x===b));render()});
 $("go").onclick=async()=>{
  if(!inWin()){alert("Orders are accepted between 7 AM and 6 PM.");return}
  const nm=$("nm").value.trim(),ph=$("ph").value.trim(),pre=pm()=="pre",del=$("md").value=="Delivery";
  if(!nm||!ph){alert("Please add your name and phone.");$("nm").scrollIntoView({block:"center"});return}
- if(del&&!$("ad").value.trim()){alert("Please add a delivery address.");return}
+ let ad="";
+ if(del){const f=$("a1").value.trim(),b2=$("a2").value.trim(),ar=$("a3").value.trim(),pin=$("a4").value.trim(),lm=$("a5").value.trim();
+  if(!f){alert("Please enter your flat / house number.");$("a1").focus();return}
+  if(!b2){alert("Please enter your building / society / street.");$("a2").focus();return}
+  if(!ar){alert("Please enter your area / locality.");$("a3").focus();return}
+  if(!/^\d{6}$/.test(pin)){alert("Please enter a valid 6-digit PIN code.");$("a4").focus();return}
+  ad=`${f}, ${b2}, ${ar}${lm?" (Near "+lm+")":""} — PIN ${pin}`}
  const dv=$("dt").value,tv=$("tm").value;
  if(!dv||!tv){alert("Please choose your date and time.");$("dt").scrollIntoView({block:"center"});return}
  if(tv<"19:00"){alert("Time must be 7:00 PM or later.");$("tm").focus();return}
  const nowI=new Date(),istDay=nowI.toLocaleDateString("en-CA",{timeZone:"Asia/Kolkata"}),istHr=+nowI.toLocaleTimeString("en-GB",{timeZone:"Asia/Kolkata",hour:"2-digit",hourCycle:"h23"});
  if(dv<istDay){alert("Please choose today or a later date.");return}
  const when=new Date(dv+"T"+tv);
- const ad=$("ad").value.trim(),nt=$("nt").value.trim();
+ const nt=$("nt").value.trim();
  const btn=$("go");
  const post=(u,b)=>fetch(u,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b)}).then(async r=>({ok:r.ok,d:await r.json().catch(()=>({}))}));
  const payload={q,name:nm,phone:ph,mode:$("md").value,address:ad,notes:nt,date:dv,time:tv};
