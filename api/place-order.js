@@ -19,6 +19,7 @@ module.exports = async (req, res) => {
       mode: order.mode, when: order.deliver_at, address: order.address, notes: order.notes, paid: false }));
     return res.status(200).json({ ok: true, id });
   } catch (e) {
+    console.error("place-order failed:", e && e.message);
     return res.status(500).json({ error: "Could not save your order. Please try again." });
   }
 };
