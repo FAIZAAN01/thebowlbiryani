@@ -197,7 +197,7 @@ input,textarea,select{transition:border-color .2s,box-shadow .2s}
 </main>
 <div class="bar"><div class="in"><div><small id="bs">1 kg</small><b id="tt">₹360</b></div><button class="btn" id="go" disabled>Place order</button></div></div>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script type="application/json" id="state">{"open":true,"note":"","opensAt":"","closesAt":""}</script>
+<script type="application/json" id="state">{"open":false,"note":"","opensAt":"","closesAt":""}</script>
 <script>
 const P=[180,360,90],N=["500 g","1 kg","250 g"],q=[0,1,0];
 const DS=[.10,.15,.05],E=P.map((x,i)=>Math.round(x*(1-DS[i])));
